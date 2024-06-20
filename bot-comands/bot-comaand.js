@@ -7,7 +7,6 @@ const JSON_FILE_PATH = path.resolve(__dirname, './chatInfo.json');
 const CHAT_MEMBERS_FILE_PATH = path.resolve(__dirname, '../DB/chatMemberInfo.json');
 
 const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
-console.log({ botUrl });
 
 async function getChatMemberCount(messageObj) {
     console.log("getChatMember Count...");
@@ -213,8 +212,6 @@ const createGroupImage = async (chatInfo, memberCount) => {
         const buffer = canvas.toBuffer('image/png');
         const imagePath = 'group-info.png';
         fs.writeFileSync(imagePath, buffer);
-
-        console.log("Image saved at:", imagePath);
         return imagePath;
     } catch (error) {
         console.log("Error in createGroupImage:", error);
@@ -271,11 +268,8 @@ const getChatMembersInfo = async (messageObj) => {
         const limit = 100; // Number of members per request
 
         while (offset < membersCount) {
-            console.log(offset);
-            
-            for (let offset = 0; offset < membersCount; offset += limit) {
-                console.log(offset);
-                
+
+            for (let offset = 0; offset < membersCount; offset += limit) {   
                 const membersBatchResponse = await Promise.all(
                     Array.from({ length: limit }, (_, i) =>
                         axios.get(`${botUrl}/getChatMember`, {
@@ -300,7 +294,6 @@ const getChatMembersInfo = async (messageObj) => {
 
 const saveJsonFile = (filePath, data) => {
     console.log("storing Chat membersInfo...");
-    console.log(data);
     
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     console.log("store chat membersInfo... :Done");
@@ -308,7 +301,6 @@ const saveJsonFile = (filePath, data) => {
 };
 
 async function handleMsg(messageObj) {
-    console.log(messageObj);
 
     if (!messageObj || !messageObj.text) return;
 
@@ -353,8 +345,6 @@ async function handleMsg(messageObj) {
                     let adminTagMessage = "👮🏻 ᴀᴅᴍɪɴs\n";
                     let count = 0;
                     administrators.forEach(admin => {
-                        console.log(admin.status);
-
                         if (admin.user.username) {
                             const tag = `@${admin.user.username} `;
                             if (admin.status === 'creator') {
@@ -373,8 +363,6 @@ async function handleMsg(messageObj) {
                 break;
             case 'pin1': {
                 if (messageObj.reply_to_message) {
-                    console.log(messageObj.reply_to_message);
-
                     await pinChatMessage(messageObj, messageObj.reply_to_message.message_id);
                 } else {
                     await sendMsg(messageObj, "ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴘɪɴ ɪᴛ !");
@@ -382,18 +370,10 @@ async function handleMsg(messageObj) {
             }
                 break;
             case "ginfo": {
-                console.log("gInfo 1");
-
                 const gInfo = await getChatInfo(messageObj.chat.id);
                 let memberCount = await getChatMemberCount(messageObj)
-                console.log({ gInfo });
-
                 if (gInfo) {
-                    console.log("casing1");
-
                     const imagePath = await createGroupImage(gInfo, memberCount);
-                    console.log("casing2");
-
                     const formattedMsg = `*${gInfo.title}*\n\n${gInfo.description || 'No description available.'}\n\nMembers: ${memberCount}`;
 
                     // await sendMsg(messageObj, formattedMsg);
@@ -466,7 +446,6 @@ async function handleMsg(messageObj) {
             case "football": await sendGame(messageObj.chat.id, '⚽');
             break;
             case "utag1":{
-                console.log({ CHAT_MEMBERS_FILE_PATH });
                 const chatMembersInfo = await getChatMembersInfo(messageObj);
                 await saveJsonFile(CHAT_MEMBERS_FILE_PATH, chatMembersInfo);
                 
