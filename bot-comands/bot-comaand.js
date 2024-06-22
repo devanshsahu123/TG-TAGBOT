@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 const createGroupImage = require('../bot-Functions/createGroupImage.js');
 const getChatAdministrators = require('../bot-Functions/getChatAdministrators.js');
 const getChatInfo = require('../bot-Functions/getChatInfo.js');
@@ -11,47 +9,24 @@ const sendGame = require('../bot-Functions/sendGame.js');
 const sendImage = require('../bot-Functions/sendImage.js');
 const sendMsg = require('../bot-Functions/sendMsg.js');
 const sendPhoto = require('../bot-Functions/sendPhoto.js'); 
-const fs = require('fs');
-const path = require('path');
-const JSON_FILE_PATH = path.resolve(__dirname, './chatInfo.json');
-const CHAT_MEMBERS_FILE_PATH = path.resolve(__dirname, '../DB/chatMemberInfo.json');
-
-const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
-
-
-const getChatMembersInfo = async (messageObj) => {
-    try {
-        const membersCount = await getChatMemberCount(messageObj);
-
-      let r = await axios.get(`${botUrl}/getUpdates`);
-      console.log(r);
-      
-        return allMembers;
-    } catch (error) {
-        console.error('Error getting chat members:', error);
-        return [];
-    }
-};
-
-const saveJsonFile = (filePath, data) => {
-    console.log("storing Chat membersInfo...");
-    
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    console.log("store chat membersInfo... :Done");
-};
+const unPinChatMessage = require('../bot-Functions/unPinChatMessage.js');
 
 
 async function handleMsg(messageObj) {
 
+
     if (!messageObj || !messageObj.text) return;
 
     const messageText = messageObj.text.trim();
+    
     if (messageText.startsWith('/')){
         const spliting = messageText.substr(1)
         const splitParts = spliting.split(' ');
-        const command = splitParts.shift().toLowerCase();
+        const command = splitParts.shift().toLowerCase().split('@')[0];
         const txtMsg = splitParts.join(' ');
+        
     if (messageObj.chat.type === 'private') {
+
         switch (command) {
             case "start":
                 await sendMsg(messageObj, "Welcome to Music Bot");
@@ -60,7 +35,7 @@ async function handleMsg(messageObj) {
     } else { // Handle group chat commands
         switch (command) {
             case "say":
-                await sendMsg(messageObj, "Hello Everyone 🫰");
+                await sendMsg(messageObj, "Welcome Everyone 🫰");
                 break;
             case "atag": {
                 try {
@@ -113,6 +88,16 @@ async function handleMsg(messageObj) {
             case 'pin': {
                 if (messageObj.reply_to_message) {
                     await pinChatMessage(messageObj, messageObj.reply_to_message.message_id);
+                    await sendMsg(messageObj, "ɪ ᴘɪɴ ɪᴛ !");
+                } else {
+                    await sendMsg(messageObj, "ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴘɪɴ ɪᴛ !");
+                }
+            }
+                break;
+            case 'unpin': {
+                if (messageObj.reply_to_message) {
+                    await unPinChatMessage(messageObj, messageObj.reply_to_message.message_id);
+                    await sendMsg(messageObj, "ɪ un Pinned It !");
                 } else {
                     await sendMsg(messageObj, "ʀᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴛᴏ ᴘɪɴ ɪᴛ !");
                 }
@@ -173,7 +158,7 @@ async function handleMsg(messageObj) {
                 }
             }
             break;
-            case "ginfo": {
+            case "glist": {
                 const gameTypes = `
                 Hiro Segawa Games -
                     '/dice': '🎲',
@@ -189,7 +174,7 @@ async function handleMsg(messageObj) {
             break
             case "dice": await sendGame(messageObj.chat.id, '🎲');
             break;
-            case "darts": await sendGame(messageObj.chat.id, '🎯');
+            case "dart": await sendGame(messageObj.chat.id, '🎯');
             break;
             case "basketball": await sendGame(messageObj.chat.id, '🏀');
             break;
@@ -199,9 +184,8 @@ async function handleMsg(messageObj) {
             break;
             case "football": await sendGame(messageObj.chat.id, '⚽');
             break;
-        
             case "utag1" : {
-                await getChatMembersInfo(messageObj);
+               
             }
         }
     }
