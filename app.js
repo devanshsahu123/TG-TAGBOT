@@ -41,13 +41,10 @@ async function main() {
 main();
 
 
-<<<<<<< Updated upstream
 
 app.get('*', (req, res) => {
     return res.send("hellow get");
 })
-=======
->>>>>>> Stashed changes
 
 app.listen(port, () => {
     console.log(`http//localhost:${port}`);
