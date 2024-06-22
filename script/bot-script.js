@@ -1,5 +1,5 @@
 const https = require('https');
-require('dotenv').config();
+require('dotenv').config(); 
 const token = process.env.BOT_TOKEN ; 
 const webhookUrl = process.env.WEBHOOK_URL ; 
 const setWebhookUrl = `https://api.telegram.org/bot${token}/setWebhook?url=${webhookUrl}`;
