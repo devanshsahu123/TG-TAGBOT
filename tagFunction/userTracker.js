@@ -6,17 +6,21 @@ function writeJsonFile(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 };
 
+
 module.exports = async function userTracker(update){
     try {
-        let data = { [update.message.from.id]: true };
+        
+        let data = { [update.message.from.username]: true };
+        if (update.message?.left_chat_participant){};
         const JSON_FILE = path.resolve(__dirname, `../DB/chatinfo/${update.message.chat.id}.json`);
-
+        
         if (fs.existsSync(JSON_FILE)) {
             const data = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8'));
-            let = isExist = data[update.message.from.id.toString()];
-
+            let = isExist = data[update.message.from.username.toString()];
+            
             if (!isExist) {
-                data[update.message.from.id] = true;
+                if (update.message.left_chat_member) data[update.message.left_chat_member.username] = false;
+                data[update.message.from.username] = true;
                 writeJsonFile(JSON_FILE, data)
             };
         } else {
@@ -25,6 +29,5 @@ module.exports = async function userTracker(update){
         }
     } catch (error) {
         console.log(error);
-        
     }
 }

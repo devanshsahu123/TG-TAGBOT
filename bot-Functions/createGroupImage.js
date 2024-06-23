@@ -75,7 +75,7 @@ module.exports =  async (chatInfo, memberCount) => {
         ctx.fillText(line, x, y);
 
         // Members
-        ctx.fillText(`- Members: ${memberCount}`, 60, 250);
+        ctx.fillText(`- Members: ${memberCount}`, 580, 70);
 
         // Get the group's profile photo URL
         const photoUrl = await getChatPhotoUrl(chatInfo);
