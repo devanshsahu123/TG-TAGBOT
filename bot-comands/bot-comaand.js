@@ -40,7 +40,7 @@ async function handleMsg(messageObj) {
         } else { // Handle group chat commands
             switch (command) {
                 case "say":{
-                    await sendMsg(messageObj, "Welcome Everyone 🫰");
+                    await sendMsg(messageObj, "Welcome Everyone 🫰.");
                 }
                     break;
                 case "atag": {
