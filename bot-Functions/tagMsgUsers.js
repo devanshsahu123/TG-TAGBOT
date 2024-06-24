@@ -1,26 +1,29 @@
 const sendMsg = require("./sendMsg");
 
-module.exports = async function tagMsgUsers(messageObj, txtMsg,data, limit) {
+module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
     let taggedUsers = [];
-    let tagCount=0;
-    for (let userId in data) {
-        if (data[userId] === true) {
-            tagCount++
+    let tagCount = 0;
+
+    for (let [userId, isActive] of data.entries()) {
+        if (isActive) {
+            tagCount++;
             taggedUsers.push(`@${userId}`);
-            if (taggedUsers.length == limit) {
-                // setTimeout(async()=>{
-                    await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
-                // },1000);
+            if (taggedUsers.length === limit) {
+                await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
                 taggedUsers = [];
             }
         }
     }
-    await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
+
+    if (taggedUsers.length > 0) {
+        await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
+    }
+
     let startMsg = `
 ✅ Process Completed ! 
-👥 Number of tagged users : ${tagCount} 
-🗣 Tag operation is started by :  @${messageObj.from.username}. 
+👥 Number of tagged users: ${tagCount} 
+🗣 Tag operation is started by: @${messageObj.from.username}. 
 You can use /help to see more Commands. Have a nice chat.`;
 
     await sendMsg(messageObj, startMsg);
-}
+};

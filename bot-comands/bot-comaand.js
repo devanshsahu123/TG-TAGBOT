@@ -15,6 +15,8 @@ const path = require('path');
 const tagMsgUsers = require('../bot-Functions/tagMsgUsers.js');
 const tagRandomMsgUsers = require('../bot-Functions/tagRandomMsgUsers.js');
 const checkAdminPermissions = require('./checkAdminPermissions.js');
+const sendHelpFunction = require('../bot-Functions/sendHelpFunction.js');
+const Group = require('../models/group.js');
 
 async function handleMsg(messageObj) {
 
@@ -25,10 +27,9 @@ async function handleMsg(messageObj) {
 
     if (messageText.startsWith('/')) {
         const spliting = messageText.substr(1)
-        const splitParts = spliting.split(' ');   
+        const splitParts = spliting.split(' ');
         const command = splitParts.shift().toLowerCase().split('@')[0];
         let txtMsg = splitParts.join(' ');
-        console.log({ s: splitParts[0] });
 
         if (messageObj.chat.type === 'private') {
 
@@ -36,10 +37,11 @@ async function handleMsg(messageObj) {
                 case "start":
                     await sendMsg(messageObj, "Welcome to Hiro Tagger \n use /help to get all the commands which you can use in the group");
                     break;
+                case "help":  sendHelpFunction(messageObj)
             }
         } else { // Handle group chat commands
             switch (command) {
-                case "say":{
+                case "say": {
                     await sendMsg(messageObj, "Welcome Everyone 🫰");
                 }
                     break;
@@ -205,57 +207,40 @@ async function handleMsg(messageObj) {
                 case "utag": {
                     try {
                         let adminAuth = await checkAdminPermissions(messageObj);
-                        if (!adminAuth) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
+                        if (!adminAuth) {
+                            return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
+                        }
 
-                        let startMsg = `𝐓𝐚𝐠 𝐎𝐩𝐞𝐫𝐚𝐭𝐢𝐨𝐧 𝐢𝐬 𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐛𝐲  : @${messageObj.from.username}.\n
-/utag - tag group members on rendom MSg's.
+let startMsg = `𝐓𝐚𝐠 𝐎𝐩𝐞𝐫𝐚𝐭𝐢𝐨𝐧 𝐢𝐬 𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐛𝐲  : @${messageObj.from.username}.\n
+/utag - tag group members on random MSg's.
 /utag yourMsg - tag group members on yourMsg.
-Have a nice chat`
-                     
+Have a nice chat`;
+
                         await sendMsg(messageObj, startMsg);
 
-                        const JSON_FILE = path.resolve(__dirname, `../DB/chatinfo/${messageObj.chat.id}.json`);
-                        const data = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8'));
-                        if (txtMsg){
+                        // Fetch group data from MongoDB
+                        const groupId = messageObj.chat.id.toString();
+                        const group = await Group.findOne({ groupId: groupId });
+
+                        if (!group) {
+                            console.log('Group not found.');
+                            return;
+                        }
+
+                        const data = group.member;
+
+                        if (txtMsg) {
                             txtMsg = `<b>${txtMsg}</b>` + '\n \n';
                             await tagMsgUsers(messageObj, txtMsg, data, 10);
-                        }else{
-                            await tagRandomMsgUsers(messageObj,data)
+                        } else {
+                            await tagRandomMsgUsers(messageObj, data);
                         }
                     } catch (error) {
                         console.log(error);
                     }
                 }
                     break;
-                case "help":{
-                    let helpCommands = `
-<b> HiroTagger => Bot Commands </b> \n
-- /say        - welcome command.
-
-- /atag       - Tag all the admins and send a message to them.
-- /admins     - Get chat admins.
-- /utag       - Tag user and send a message or a random message.
-
-- /ginfo      - Get chat information.
-- /info       - Get user or own information.
-
-- /pin        - 📍 Used to pin a message.
-- /unpin      - 📍 Used to unpin the pinned message.
-
-
-- /glist      - Get games list.
-- /dice       - Play dice game 🎲.
-- /dart       - Play dart game 🎯.
-- /basketball - Play basketball 🏀.
-- /slot       - Play slot game 🎰.
-- /bowling    - Play bowling 🎳.
-- /football   - Play football ⚽️.
-
-- /help       - Get all the commands of the HiroTagger Bot.
-`
-
-                   await sendMsg(messageObj, helpCommands)
-                }
+                case "help": sendHelpFunction(messageObj)
             }
         }
     }

@@ -1,33 +1,59 @@
-const fs = require('fs');
-const path = require('path');
+const path = require('path')
+const Group = require('../models/group.js'); // Adjust the path as necessary
+const sendImage = require('../bot-Functions/sendImage.js');
 
-//write json File;
-function writeJsonFile(filePath, data) {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-};
-
-
-module.exports = async function userTracker(update){
+module.exports = async function userTracker(update) {
     try {
+        const groupId = update.message.chat.id.toString();
+        const username = update.message.from.username;
+        const leftChatMember = update.message.left_chat_member ? update.message.left_chat_member.username : null;
+        const newChatMember =  update.message.new_chat_member?.username;
+
+        if (newChatMember){
+            const botImagePath = path.resolve(__dirname, '../image/png/bot-image.jpg');
+            const caption = `
+🎉 *Welcome to Creator Academy 🍪, @Chizuru_iichinose! 🎉*
+
+We're glad to have you here. Feel free to ask questions, share your thoughts, and engage with the community.
+
+📢 *Useful Commands*:
+- /help: Get a list of available commands.
+
+Let's have a great time together! 😊`;
+            await sendImage(update.message, botImagePath, caption);
+        }
         
-        let data = { [update.message.from.username]: true };
-        if (update.message?.left_chat_participant){};
-        const JSON_FILE = path.resolve(__dirname, `../DB/chatinfo/${update.message.chat.id}.json`);
-        
-        if (fs.existsSync(JSON_FILE)) {
-            const data = JSON.parse(fs.readFileSync(JSON_FILE, 'utf-8'));
-            let = isExist = data[update.message.from.username.toString()];
+
+        const data = { [username]: true };
+        if (leftChatMember){ data[leftChatMember] = false; console.log("check");
+        }
+
+        // Check if the group document exists
+        let group = await Group.findOne({ groupId: groupId });
+
+        if (group) {
+            // Update existing group
+            group.member.set(username, true);
+
+            if (leftChatMember) {
+                group.member.set(leftChatMember, false);
+                console.log("check 2");
+            }
+            console.log("check 3");
             
-            if (!isExist) {
-                if (update.message.left_chat_member) data[update.message.left_chat_member.username] = false;
-                data[update.message.from.username] = true;
-                writeJsonFile(JSON_FILE, data)
-            };
+            await group.save();
+            
+            console.log('Group updated successfully.');
         } else {
-            writeJsonFile(JSON_FILE, data);
-            console.log('File created successfully.');
+            // Create new group
+            group = new Group({
+                groupId: groupId,
+                member: data
+            });
+            await group.save();
+            console.log('Group created successfully.');
         }
     } catch (error) {
-        console.log(error);
+        console.log('Error:', error);
     }
-}
+};

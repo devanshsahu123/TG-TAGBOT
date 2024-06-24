@@ -1,14 +1,13 @@
 require('dotenv').config();
+require('./DB/db.js');
 const express = require('express');
+const app = express();
+app.use(express.json());
+
 const handler = require('./bot-comands/handler');
 const userTracker = require('./tagFunction/userTracker');
-const sendImage = require('./bot-Functions/sendImage');
-const sendMsg = require('./bot-Functions/sendMsg');
-const app = express();
 const port = process.env.PORT || 3001;
-app.use(express.json());
 const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
-
 
 
 async function fetchUpdates(offset) {
@@ -31,9 +30,9 @@ async function main() {
     let offset = 0;
     while (true) {
         const updates = await fetchUpdates(offset);
-// console.log(updates);
-
         console.log(offset);
+        // console.log(updates);
+        
         if (updates && updates.length > 0) {
             if (updates.length == 1) {
                 handler(updates[0])
