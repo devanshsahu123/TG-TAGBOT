@@ -10,7 +10,6 @@ module.exports = async function getChatMemberInfo(messageObj, user_id) {
                 user_id
             },
         });
-
         return response.data.result;
     } catch (error) {
         console.log(error);

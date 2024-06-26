@@ -10,8 +10,6 @@ const sendImage = require('../bot-Functions/sendImage.js');
 const sendMsg = require('../bot-Functions/sendMsg.js');
 const sendPhoto = require('../bot-Functions/sendPhoto.js');
 const unPinChatMessage = require('../bot-Functions/unPinChatMessage.js');
-const fs = require('fs');
-const path = require('path');
 const tagMsgUsers = require('../bot-Functions/tagMsgUsers.js');
 const tagRandomMsgUsers = require('../bot-Functions/tagRandomMsgUsers.js');
 const checkAdminPermissions = require('./checkAdminPermissions.js');
@@ -19,8 +17,6 @@ const sendHelpFunction = require('../bot-Functions/sendHelpFunction.js');
 const Group = require('../models/group.js');
 
 async function handleMsg(messageObj) {
-
-
     if (!messageObj || !messageObj.text) return;
 
     const messageText = messageObj.text.trim();
@@ -41,15 +37,12 @@ async function handleMsg(messageObj) {
             }
         } else { // Handle group chat commands
             switch (command) {
-                case "say": {
-                    await sendMsg(messageObj, "Welcome Everyone 🫰");
-                }
-                    break;
+                case "say": await sendMsg(messageObj, "Welcome Everyone 🫰"); break;
                 case "atag": {
                     try {
-                        if (!txtMsg) return await sendMsg(messageObj, `
-  <b>Please @${messageObj.from.username} provide Message for admin</b>
- <i>Example</i> - /utag yourMsg`);
+if (!txtMsg) return await sendMsg(messageObj, `
+<b>Please @${messageObj.from.username} provide Message for admin</b>
+<i>Example</i> - /utag yourMsg`);
 
                         let adminAuth = await checkAdminPermissions(messageObj);
                         if (!adminAuth) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
@@ -62,7 +55,7 @@ async function handleMsg(messageObj) {
                                     tagMessage += `@${admin.user.username} `;
                                 }
                             });
-                            if (txtMsg) tagMessage += `\n\n <b> ${txtMsg} <b/>`;
+                            if (txtMsg) tagMessage += `\n\n <b> ${txtMsg} </b>`;
 
                             await sendMsg(messageObj, tagMessage);
                         } else {
@@ -70,7 +63,6 @@ async function handleMsg(messageObj) {
                         }
                     } catch (error) {
                         console.log(error);
-
                     }
                 }
 
@@ -128,10 +120,10 @@ async function handleMsg(messageObj) {
                         const gInfo = await getChatInfo(messageObj.chat.id);
                         let memberCount = await getChatMemberCount(messageObj)
                         if (gInfo) {
-                            const imagePath = await createGroupImage(gInfo, memberCount);
                             const formattedMsg = `*${gInfo.title}*\n\n${gInfo.description || 'No description available.'}\n\nMembers: ${memberCount}`;
-
                             await sendMsg(messageObj, formattedMsg);
+                            
+                            const imagePath = await createGroupImage(gInfo, memberCount);
                             await sendImage(messageObj, imagePath);
                         } else {
                             await sendMsg(messageObj, "Unable to retrieve group information.");
@@ -196,20 +188,15 @@ async function handleMsg(messageObj) {
                     break;
                 case "dart": await sendGame(messageObj.chat.id, '🎯');
                     break;
-                case "basketball": await sendGame(messageObj.chat.id, '🏀');
-                    break;
-                case "slot": await sendGame(messageObj.chat.id, '🎰');
-                    break;
-                case "bowling": await sendGame(messageObj.chat.id, '🎳');
-                    break;
-                case "football": await sendGame(messageObj.chat.id, '⚽');
-                    break;
+                case "basketball": await sendGame(messageObj.chat.id, '🏀'); break;
+                case "slot": await sendGame(messageObj.chat.id, '🎰'); break;
+                case "bowling": await sendGame(messageObj.chat.id, '🎳'); break;
+                case "football": await sendGame(messageObj.chat.id, '⚽'); break;
                 case "utag": {
                     try {
                         let adminAuth = await checkAdminPermissions(messageObj);
-                        if (!adminAuth) {
-                            return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
-                        }
+                        if (!adminAuth)return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
+                        
 
 let startMsg = `𝐓𝐚𝐠 𝐎𝐩𝐞𝐫𝐚𝐭𝐢𝐨𝐧 𝐢𝐬 𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐛𝐲  : @${messageObj.from.username}.\n
 /utag - tag group members on random MSg's.
@@ -238,8 +225,7 @@ Have a nice chat`;
                     } catch (error) {
                         console.log(error);
                     }
-                }
-                    break;
+                }; break;
                 case "help": sendHelpFunction(messageObj)
             }
         }
