@@ -7,9 +7,9 @@ const app = express();
 const port = process.env.PORT || 3001;
 app.use(express.json());
 
-(async () => {
-    await groupJobUpdater();
-})();
+// (async () => {
+//     await groupJobUpdater();
+// })();
 
 //tesiting routes
 app.post('*', (req, res) => {
