@@ -40,15 +40,14 @@ async function groupJobUpdater() {
 
                     // Fetch member count using getChatMemberCount function
                     const messageObj = { chat: { id: groupJob.groupId } };
-                    const memberCount = await getChatMemberCount(messageObj);
+                    let memberCount = await getChatMemberCount(messageObj);
 
                     // Fetch participants from Telegram channel in batches
                     let offset = 0;
                     const limit = 100; // Telegram API limit per request
                     const fetchedUsernames = [];
-
                     console.log(`Fetching members for group ID ${groupJob.groupId} in batches...`);
-                    while (offset < memberCount) {
+                    while (offset <= memberCount) {
                         const chat = await client.getEntity(groupJob.groupId);
                         const participants = await client.invoke(
                             new Api.channels.GetParticipants({
@@ -59,17 +58,23 @@ async function groupJobUpdater() {
                                 hash: 0,
                             })
                         );
+                        
+                        const usernames = participants.users.filter(user => !user.bot).map(user => `"${user.username}"`);
 
-                        const usernames = participants.users.map(user => `"${user.username}"`);
+                        if (usernames==0) {
+                            console.log("no Update Found Breaked the loop...");
+                            break;
+                        }
+
                         fetchedUsernames.push(...usernames);
-                        console.log(usernames);
-                        
+
+                        if (offset == 200) memberCount = 200;
+                        console.log({ offset });
                         console.log("upating members...");
-                        
                         await updateGroupMembers(group, fetchedUsernames);
                         offset += limit;
                         console.log(`Fetched ${usernames.length} usernames. Total fetched: ${fetchedUsernames.length}`);
-                        await sleep(60000*1.5); // Sleep for 1 minute between batches
+                        await sleep(60000 * 1.5); // Sleep for 1 minute between batches
                     }
                     // Update Group model with fetched members
                 } else {
@@ -86,11 +91,11 @@ async function groupJobUpdater() {
             }
 
             console.log('Waiting for next check...');
-            await sleep(60000*3); // Sleep for 1 minute between checks
+            await sleep(60000 * 3); // Sleep for 1 minute between checks
         } catch (error) {
             console.error('Error in groupJobUpdater:', error);
             console.log('Waiting before retrying...');
-            await sleep(60000*10); // Wait 1 minute before retrying in case of an error
+            await sleep(60000 * 10); // Wait 1 minute before retrying in case of an error
         }
     }
 }
@@ -98,16 +103,16 @@ async function groupJobUpdater() {
 // Function to update Group model with fetched members
 async function updateGroupMembers(group, usernames) {
     console.log(usernames);
-    
+
     // Ensure usernames are unique
     const uniqueUsernames = Array.from(new Set(usernames));
-console.log("member updating in db..");
+    console.log("member updating in db..");
 
     // Update or create members in the group
     uniqueUsernames.forEach(username => {
         group.members.set(username, true); // Assuming username is used as key, adjust as per your data structure
     });
-console.log("member about to save..");
+    console.log("member about to save..");
 
     // Save updated group model
     await group.save();
