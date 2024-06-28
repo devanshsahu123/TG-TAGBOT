@@ -5,6 +5,7 @@ const { Api } = require('telegram/tl');
 const GroupJob = require('../models/groupJob.js');
 const Group = require('../models/group.js');
 const getChatMemberCount = require('../bot-Functions/getChatMemberCount.js'); // Adjust path as necessary
+const { sleep } = require('telegram/Helpers.js');
 
 const TELEGRAM_API_ID = parseInt(process.env.TELEGRAM_API_ID); // Parse as integer
 const TELEGRAM_API_HASH = process.env.TELEGRAM_API_HASH;
@@ -118,11 +119,6 @@ async function updateGroupMembers(group, usernames) {
     // Save updated group model
     await group.save();
     console.log(`Updated members for group ID ${group.groupId}`);
-}
-
-// Utility function to handle sleep/delay
-async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = groupJobUpdater;
