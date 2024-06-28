@@ -15,8 +15,6 @@ const tagRandomMsgUsers = require('../bot-Functions/tagRandomMsgUsers.js');
 const checkAdminPermissions = require('./checkAdminPermissions.js');
 const sendHelpFunction = require('../bot-Functions/sendHelpFunction.js');
 const Group = require('../models/group.js');
-const VoiceChatManager = require('../bot-Functions/VoiceChatManager.js');
-const manageVoiceChat = require('../bot-Functions/VoiceChatManager.js');
 const promoMsgs = require('../bot-Functions/promoMsgs.js');
 
 async function handleMsg(messageObj) {
