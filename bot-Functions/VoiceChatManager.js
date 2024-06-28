@@ -1,34 +1,60 @@
-const axios = require('axios');
-const sendMsg = require('./sendMsg');
-const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
+const { TelegramClient } = require('telegram');
+const { StringSession } = require('telegram/sessions');
+const { Api } = require('telegram');
 
-module.exports = async function manageVoiceChat(messageObj, action) {
-    console.log(`Managing voice chat action: ${action}...`);
+const apiId = parseInt(process.env.TELEGRAM_API_ID);
+const apiHash = process.env.TELEGRAM_API_HASH;
+const botToken = process.env.BOT_TOKEN;
+const chatId = '-1002058406009'; // Your chat ID
+
+async function manageVoiceChat(action) {
+    const client = new TelegramClient(new StringSession(''), apiId, apiHash, {
+        connectionRetries: 5,
+    });
+
+    await client.start({
+        botAuthToken: botToken,
+    });
+
+    console.log('Bot is connected.');
+
     try {
-        let endpoint;
-        switch (action) {
-            case 'startvc':
-                endpoint = 'startVoiceChat';
-                break;
-            case 'stopvc':
-                endpoint = 'stopVoiceChat';
-                break;
-            default:
-                throw new Error('Invalid action specified.');
+        if (action === 'startvc') {
+            // Start Voice Chat
+            const result = await client.invoke(
+                new Api.phone.CreateGroupCall({
+                    peer: await client.getEntity(chatId),
+                    randomId: Math.floor(Math.random() * 100000),
+                    title: 'Group Voice Chat',
+                })
+            );
+
+            console.log('Voice Chat started:', result);
+            return result;
+        } else if (action === 'stopvc') {
+            // Note: Replace with actual callId and accessHash values
+            const callId = 'your_call_id'; // You need to replace this with the actual call ID
+            const accessHash = 'your_access_hash'; // You need to replace this with the actual access hash
+
+            // Stop Voice Chat
+            const result = await client.invoke(
+                new Api.phone.DiscardGroupCall({
+                    call: new Api.InputGroupCall({
+                        id: callId,
+                        accessHash: accessHash,
+                    }),
+                })
+            );
+
+            console.log('Voice Chat stopped:', result);
+            return result;
+        } else {
+            throw new Error('Invalid action specified.');
         }
-
-        const url = `${botUrl}/${endpoint}`;
-        const payload = {
-            chat_id: messageObj.chat.id,
-        };
-
-        const response = await axios.post(url, payload);
-
-        console.log(`Voice chat ${endpoint} successful.`);
-        return response.data;
     } catch (error) {
-        await sendMsg(messageObj, "Oops! I am not able to manage voice chats in this group.");
-        console.error(`Error while ${action}ing voice chat:`, error);
-        // throw error; // Ensure error is propagated if necessary
+        console.error(`Error while ${action === 'startvc' ? 'starting' : 'stopping'} voice chat:`, error);
+        throw error;
     }
-};
+}
+
+module.exports = manageVoiceChat;

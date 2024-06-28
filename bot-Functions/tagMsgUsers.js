@@ -1,3 +1,4 @@
+const sleep = require("../cron/sleep");
 const sendMsg = require("./sendMsg");
 
 module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
@@ -7,9 +8,10 @@ module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
     for (let [userId, isActive] of data.entries()) {
         if (isActive) {
             tagCount++;
-            taggedUsers.push(`@${userId}`);
+            taggedUsers.push(`@${userId.replace(/^"(.*)"$/, '$1') }`);
             if (taggedUsers.length === limit) {
                 await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
+                await sleep(1000)
                 taggedUsers = [];
             }
         }

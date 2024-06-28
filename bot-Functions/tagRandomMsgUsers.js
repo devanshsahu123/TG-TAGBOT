@@ -1,3 +1,4 @@
+const sleep = require("../cron/sleep");
 const randomMsgs = require("../DB/msgs/randomMsgs");
 const sendMsg = require("./sendMsg");
 
@@ -8,7 +9,8 @@ module.exports = async function tagRandomMsgUsers(messageObj, data) {
         for (let [userId, isActive] of data.entries()) {
             if (isActive) {
                 tagCount++;
-                await sendMsg(messageObj, `@${userId} ` + await randomMsgs());
+                await sendMsg(messageObj, `@${userId.replace(/^"(.*)"$/, '$1') } ` + await randomMsgs());
+                await sleep(1000)
             }
         }
 
