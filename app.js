@@ -19,7 +19,7 @@ app.post('*', (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    return res.send("hellow get");
+    res.send("hello get");
 })
 
 app.listen(port, () => {

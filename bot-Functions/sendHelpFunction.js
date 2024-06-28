@@ -24,8 +24,11 @@ module.exports = async function sendHelpFunction(messageObj){
 - /bowling    - Play bowling 🎳.
 - /football   - Play football ⚽️.
 
-- /help       - Get all the commands of the HiroTagger Bot.
-`
+- /promo      - Get PromoCommands
+- /promogroup - This command help you to mention group Members and tell them to promote Group.
+- /promobot   - This command help us to promote Bot.
 
+- /help        - Get all the commands of the HiroTagger Bot.
+`
     await sendMsg(messageObj, helpCommands)
 }
