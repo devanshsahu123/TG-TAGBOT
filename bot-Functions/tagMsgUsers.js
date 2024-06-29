@@ -13,13 +13,13 @@ module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
             break
         };
         if (isActive) {
-            tagCount++;
             taggedUsers.push(`@${userId.replace(/^"(.*)"$/, '$1')}`);
             if (taggedUsers.length === limit) {
                 await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
                 await sleep(1000)
                 taggedUsers = [];
             }
+            tagCount++;
         }
     }
 

@@ -13,8 +13,8 @@ module.exports = async function tagRandomMsgUsers(messageObj, data) {
                  break
                 };
             if (isActive) {
-                tagCount++;
                 await sendMsg(messageObj, `@${userId.replace(/^"(.*)"$/, '$1')} ` + await randomMsgs());
+                tagCount++;
                 await sleep(1000)
             }
         }
