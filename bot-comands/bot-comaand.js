@@ -194,7 +194,7 @@ if (!txtMsg) return await sendMsg(messageObj, `
                 case "slot": await sendGame(messageObj.chat.id, '🎰'); break;
                 case "bowling": await sendGame(messageObj.chat.id, '🎳'); break;
                 case "football": await sendGame(messageObj.chat.id, '⚽'); break;
-                case "utag1": {
+                case "utag": {
                     try {
                         let adminAuth = await checkAdminPermissions(messageObj);
                         if (!adminAuth)return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
