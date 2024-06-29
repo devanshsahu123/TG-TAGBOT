@@ -1,4 +1,5 @@
 const sleep = require("../cron/sleep.js");
+const { state } = require("../cron/state.js");
 const Group = require("../models/group");
 const sendMsg = require("./sendMsg");
 

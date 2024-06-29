@@ -125,8 +125,8 @@ if (!txtMsg) return await sendMsg(messageObj, `
                             const formattedMsg = `*${gInfo.title}*\n\n${gInfo.description || 'No description available.'}\n\nMembers: ${memberCount}`;
                             await sendMsg(messageObj, formattedMsg);
                             
-                            const imagePath = await createGroupImage(gInfo, memberCount);
-                            await sendImage(messageObj, imagePath);
+                            // const imagePath = await createGroupImage(gInfo, memberCount);
+                            // await sendImage(messageObj, imagePath);
                         } else {
                             await sendMsg(messageObj, "Unable to retrieve group information.");
                         }
@@ -194,7 +194,7 @@ if (!txtMsg) return await sendMsg(messageObj, `
                 case "slot": await sendGame(messageObj.chat.id, '🎰'); break;
                 case "bowling": await sendGame(messageObj.chat.id, '🎳'); break;
                 case "football": await sendGame(messageObj.chat.id, '⚽'); break;
-                case "utag": {
+                case "utag1": {
                     try {
                         let adminAuth = await checkAdminPermissions(messageObj);
                         if (!adminAuth)return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
