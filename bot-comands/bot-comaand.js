@@ -16,6 +16,7 @@ const checkAdminPermissions = require('./checkAdminPermissions.js');
 const sendHelpFunction = require('../bot-Functions/sendHelpFunction.js');
 const Group = require('../models/group.js');
 const promoMsgs = require('../bot-Functions/promoMsgs.js');
+const stopTagging = require('../cron/stopTagging.js');
 
 async function handleMsg(messageObj) {
     if (!messageObj || !messageObj.text) return;
@@ -193,7 +194,7 @@ if (!txtMsg) return await sendMsg(messageObj, `
                 case "slot": await sendGame(messageObj.chat.id, '🎰'); break;
                 case "bowling": await sendGame(messageObj.chat.id, '🎳'); break;
                 case "football": await sendGame(messageObj.chat.id, '⚽'); break;
-                case "utag": {
+                case "utag1": {
                     try {
                         let adminAuth = await checkAdminPermissions(messageObj);
                         if (!adminAuth)return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
@@ -234,13 +235,18 @@ You Can Use This Promo Command In this Way.\n
 /promogroup - This command help you to mention group Members and tell them to promote Group.\n
 /promobot - This command help us to promote Bot.</b>
 `); break; 
-}
+};
                 case "promobot":
                 case "promogroup":{
                     let adminAuth = await checkAdminPermissions(messageObj);
                     if (!adminAuth) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
                     await promoMsgs(messageObj, command);
+                    break;
                 }
+                case "cancel":{
+                    await stopTagging(messageObj.chat.id);
+                    await sendMsg(messageObj,"<b> This Tagging opration has been closed </b>")
+                };break;
             }
         }
     }

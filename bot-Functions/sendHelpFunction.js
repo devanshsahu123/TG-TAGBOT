@@ -29,6 +29,7 @@ module.exports = async function sendHelpFunction(messageObj){
 - /promobot   - This command help us to promote Bot.
 
 - /help        - Get all the commands of the HiroTagger Bot.
+- /cancel      - Stop the Hiro Tagging process.
 `
     await sendMsg(messageObj, helpCommands)
 }

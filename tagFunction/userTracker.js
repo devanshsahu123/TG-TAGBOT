@@ -11,8 +11,6 @@ module.exports = async function userTracker(update) {
         const username = from.username;
         const leftChatMember = left_chat_member ? left_chat_member.username : null;
         const newChatMember = new_chat_member?.username;
-        
-        
         // Handle new chat member
         const memberData = { [username]: true };
         let isActive = true;

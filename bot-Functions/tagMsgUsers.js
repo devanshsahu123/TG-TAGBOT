@@ -1,14 +1,19 @@
-const sleep = require("../cron/sleep");
+const sleep = require("../cron/sleep.js");
 const sendMsg = require("./sendMsg");
 
 module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
     let taggedUsers = [];
     let tagCount = 0;
 
+    state.state[messageObj.chat.id] = false;
     for (let [userId, isActive] of data.entries()) {
+        if (state.state[messageObj.chat.id]) {
+            state.state[messageObj.chat.id] = false;
+            break
+        };
         if (isActive) {
             tagCount++;
-            taggedUsers.push(`@${userId.replace(/^"(.*)"$/, '$1') }`);
+            taggedUsers.push(`@${userId.replace(/^"(.*)"$/, '$1')}`);
             if (taggedUsers.length === limit) {
                 await sendMsg(messageObj, txtMsg + taggedUsers.join(' '));
                 await sleep(1000)
@@ -25,7 +30,9 @@ module.exports = async function tagMsgUsers(messageObj, txtMsg, data, limit) {
 ✅ Process Completed ! 
 👥 Number of tagged users: ${tagCount} 
 🗣 Tag operation is started by: @${messageObj.from.username}. 
-You can use /help to see more Commands. Have a nice chat.`;
+You can use /help to see more Commands. Have a nice chat.
+You can use /cancel to stop the Commands.
+`;
 
     await sendMsg(messageObj, startMsg);
 };
