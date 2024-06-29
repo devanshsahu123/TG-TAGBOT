@@ -50,7 +50,7 @@ async function groupJobUpdater() {
                     console.log(`Fetching members for group ID ${groupJob.groupId} in batches...`);
                     while (offset <= memberCount) {
                         const chat = await client.getEntity(groupJob.groupId);
-                        console.log(chat);
+                        // console.log(chat);
                         const participants = await client.invoke(
                             new Api.channels.GetParticipants({
                                 channel: chat,
