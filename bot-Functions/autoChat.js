@@ -7,7 +7,7 @@ module.exports = async function autoChat(messageObj) {
         let replyMsg;   
         console.log(messageObj.text);
            console.log("checking text match to reply..");
-        switch (messageObj.test.toLowerCase()) {
+        switch (messageObj.text.toLowerCase()) {
             case "hi":
             case "hii":
             case "hay":
@@ -862,6 +862,7 @@ module.exports = async function autoChat(messageObj) {
             //     replyMsg = "Mujhe nahi pata aap kis baare mein baat kar rahe hain. 😅";
             //     break;
         }
+        console.log({messageObj}, replyMsg);
 
         if (!replyMsg) return 0;
         await axios.get(`${botUrl}/sendMessage`, {
