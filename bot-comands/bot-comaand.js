@@ -17,12 +17,13 @@ const sendHelpFunction = require('../bot-Functions/sendHelpFunction.js');
 const Group = require('../models/group.js');
 const promoMsgs = require('../bot-Functions/promoMsgs.js');
 const stopTagging = require('../cron/stopTagging.js');
+const autoChat = require('../bot-Functions/autoChat.js');
 
 async function handleMsg(messageObj) {
+
+    if (messageObj.chat.type !== 'private')autoChat(messageObj);
     if (!messageObj || !messageObj.text) return;
-
     const messageText = messageObj.text.trim();
-
     if (messageText.startsWith('/')) {
         const spliting = messageText.substr(1)
         const splitParts = spliting.split(' ');
@@ -242,7 +243,7 @@ You Can Use This Promo Command In this Way.\n
                     if (!adminAuth) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
                     await promoMsgs(messageObj, command);
                     break;
-                }
+                };
                 case "cancel":{
                     await stopTagging(messageObj.chat.id);
                     await sendMsg(messageObj,"<b> This Tagging opration has been closed </b>")
