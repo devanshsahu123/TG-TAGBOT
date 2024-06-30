@@ -63,7 +63,7 @@ async function groupJobUpdater() {
                             })
                         );
                         
-                        const usernames = participants.users.filter(user => !user.bot).map(user => `${user.username}`);
+                        const usernames = participants.users.filter(user => !user.bot || user.username).map(user => `${user.username}`);
 
                         if (usernames==0) {
                             console.log("no Update Found Breaked the loop...");
