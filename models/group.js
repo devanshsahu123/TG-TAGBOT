@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const groupSchema = new Schema({
     groupId: { type: String, required: true, unique: true },
-    groupName: { type: String, required: true },
+    groupName: { type: String, required: false },
     members: { type: Map, of: Boolean, default: new Map() }
 });
 
