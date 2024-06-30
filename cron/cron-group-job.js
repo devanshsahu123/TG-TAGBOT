@@ -41,6 +41,8 @@ async function groupJobUpdater() {
 
                     // Fetch member count using getChatMemberCount function
                     const messageObj = { chat: { id: groupJob.groupId } };
+                    console.log(messageObj);
+                    
                     let memberCount = await getChatMemberCount(messageObj);
 
                     // Fetch participants from Telegram channel in batches
