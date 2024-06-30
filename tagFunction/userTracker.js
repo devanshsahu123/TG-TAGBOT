@@ -62,13 +62,11 @@ if(!chat){
 
             groupJob = new GroupJob({
                 groupId,
-                groupName: chat.username,
+                groupName: chat?.username || null,
             });
-
+            console.log({ groupJob, chatUserName: chat.username });
             console.log('Group and GroupJob created successfully...');
-        }
-        console.log({ groupJob });
-        
+        }        
         await groupJob.save()
         await group.save();
     } catch (error) {
