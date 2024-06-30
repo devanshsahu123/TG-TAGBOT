@@ -43,8 +43,10 @@ Take care and have a great day! 🌟`);
         let group = await Group.findOne({ groupId });
         let groupJob = await GroupJob.findOne({ groupId });
 console.log({chat});
-if(chat){console.log("chat missing break..");
- return }
+if(!chat){
+    console.log("chat missing break..");
+    return 
+}
         if (group) {
             // Update existing group
             group.members.set(username, isActive);
