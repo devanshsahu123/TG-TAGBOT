@@ -67,6 +67,8 @@ if(!chat){
 
             console.log('Group and GroupJob created successfully...');
         }
+        console.log({ groupJob });
+        
         await groupJob.save()
         await group.save();
     } catch (error) {
