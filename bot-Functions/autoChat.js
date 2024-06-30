@@ -3,11 +3,9 @@ const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
 
 module.exports = async function autoChat(messageObj) {
     try {
-        // if (messageObj?.reply_to_message?.from?.username !== process.env.BOT_USERNAME) return 0;
         let replyMsg;   
-        console.log(messageObj.text);
            console.log("checking text match to reply..");
-        switch (messageObj.text.toLowerCase()) {
+        switch (messageObj?.text?.toLowerCase()) {
             case "hi":
             case "hii":
             case "hay":
@@ -862,8 +860,6 @@ module.exports = async function autoChat(messageObj) {
             //     replyMsg = "Mujhe nahi pata aap kis baare mein baat kar rahe hain. 😅";
             //     break;
         }
-        console.log({messageObj}, replyMsg);
-
         if (!replyMsg) return 0;
         await axios.get(`${botUrl}/sendMessage`, {
             params: {

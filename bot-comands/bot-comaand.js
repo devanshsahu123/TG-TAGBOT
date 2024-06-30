@@ -21,7 +21,8 @@ const autoChat = require('../bot-Functions/autoChat.js');
 
 async function handleMsg(messageObj) {
     try {
-    if (messageObj?.chat?.type !== 'private')autoChat(messageObj);
+        
+    if (messageObj?.chat?.type && messageObj?.text && messageObj?.chat?.type !== 'private')autoChat(messageObj);
     if (!messageObj || !messageObj.text) return;
     const messageText = messageObj.text.trim();
     if (messageText.startsWith('/')) {
