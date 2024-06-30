@@ -20,6 +20,7 @@ const stopTagging = require('../cron/stopTagging.js');
 const autoChat = require('../bot-Functions/autoChat.js');
 
 async function handleMsg(messageObj) {
+    try {
     if (messageObj?.chat?.type !== 'private')autoChat(messageObj);
     if (!messageObj || !messageObj.text) return;
     const messageText = messageObj.text.trim();
@@ -249,6 +250,9 @@ You Can Use This Promo Command In this Way.\n
                 };break;
             }
         }
+    }
+    } catch (error) {
+    console.log(error);
     }
 }
 
