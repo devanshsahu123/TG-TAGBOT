@@ -18,6 +18,7 @@ const Group = require('../models/group.js');
 const promoMsgs = require('../bot-Functions/promoMsgs.js');
 const stopTagging = require('../cron/stopTagging.js');
 const autoChat = require('../bot-Functions/autoChat.js');
+const translateAndSendMessage = require('../bot-Functions/translation.js');
 
 async function handleMsg(messageObj) {
     try {
@@ -249,6 +250,39 @@ You Can Use This Promo Command In this Way.\n
                     await stopTagging(messageObj.chat.id);
                     await sendMsg(messageObj,"<b> This Tagging opration has been closed </b>")
                 };break;
+                case "tr":{
+                    const supportedLanguages = [
+                        'af', 'sq', 'am', 'ar', 'hy', 'az', 'eu', 'be', 'bn', 'bs', 'bg', 'ca', 'ceb', 'ny', 'zh-CN', 'co',
+                        'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'tl', 'fi', 'fr', 'fy', 'gl', 'ka', 'de', 'el', 'gu', 'ht',
+                        'ha', 'haw', 'iw', 'hi', 'hmn', 'hu', 'is', 'ig', 'id', 'ga', 'it', 'ja', 'jw', 'kn', 'kk', 'km', 'ko',
+                        'ku', 'ky', 'lo', 'la', 'lv', 'lt', 'lb', 'mk', 'mg', 'ms', 'ml', 'mt', 'mi', 'mr', 'mn', 'my', 'ne',
+                        'no', 'ps', 'fa', 'pl', 'pt', 'pa', 'ro', 'ru', 'sm', 'gd', 'sr', 'st', 'sn', 'sd', 'si', 'sk', 'sl',
+                        'so', 'es', 'su', 'sw', 'sv', 'tg', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'ug', 'uz', 'vi', 'cy', 'xh',
+                        'yi', 'yo', 'zu'
+                    ];
+                    if (!txtMsg) txtMsg ='en';
+                   if(!supportedLanguages.includes(txtMsg)){
+                       return sendMsg(messageObj, `
+<strong>Error:</strong> The language code you provided is not supported.
+\n
+<strong>Support All languages:</strong>\n 
+Just reply on any txt by this way
+syntax => /tr languageCode 
+example => 'hi','en' etc. 
+command => /tr hi
+command => /tr en
+    `)
+                   }
+                   
+                    if (messageObj?.reply_to_message?.text) return translateAndSendMessage(messageObj, messageObj?.reply_to_message?.text,txtMsg);
+sendMsg(messageObj, `<b>reply on any Msg which you want to translate. bchaa</b>
+<strong>Support All languages:</strong>\n 
+Just reply on any txt by this way
+syntax => /tr languageCode 
+example => 'hi','en' etc. 
+command => /tr hi
+command => /tr en`);
+                }
             }
         }
     }

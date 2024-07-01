@@ -30,6 +30,8 @@ module.exports = async function sendHelpFunction(messageObj){
 
 - /help        - Get all the commands of the HiroTagger Bot.
 - /cancel      - Stop the Hiro Tagging process.
+
+- /tr languageCode - translate any msg on your language
 `
     await sendMsg(messageObj, helpCommands)
 }
