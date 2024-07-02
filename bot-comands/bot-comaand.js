@@ -19,6 +19,8 @@ const promoMsgs = require('../bot-Functions/promoMsgs.js');
 const stopTagging = require('../cron/stopTagging.js');
 const autoChat = require('../bot-Functions/autoChat.js');
 const translateAndSendMessage = require('../bot-Functions/translation.js');
+const { createAfkHandler } = require('../bot-Functions/afkHandler.js');
+const { toUnicodeBold } = require('../textDecorator/boldCreator.js');
 
 async function handleMsg(messageObj) {
     try {
@@ -282,10 +284,16 @@ syntax => /tr languageCode
 example => 'hi','en' etc. 
 command => /tr hi
 command => /tr en`);
+                }; break;
+                case "afk":{
+                    if (!txtMsg) txtMsg ='unknown';
+                    await createAfkHandler(messageObj,txtMsg);
+                    await sendMsg(messageObj, toUnicodeBold(`${messageObj?.from?.first_name} is now Away!\n reasion : ${txtMsg} 💜`),true);
                 }
             }
         }
-    }
+    };
+
     } catch (error) {
     console.log(error);
     }
