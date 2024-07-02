@@ -37,6 +37,7 @@ async function handleMsg(messageObj) {
         if (messageObj.chat.type === 'private') {
 
             switch (command) {
+                case "welcome":
                 case "start":
                     await sendMsg(messageObj, "Welcome to Hiro Tagger \n use /help to get all the commands which you can use in the group");
                     break;
@@ -74,6 +75,7 @@ if (!txtMsg) return await sendMsg(messageObj, `
                 }
 
                     break;
+                case "staffs":
                 case "admins": {
                     try {
                         const administrators = await getChatAdministrators(messageObj);
