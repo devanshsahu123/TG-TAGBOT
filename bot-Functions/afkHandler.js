@@ -27,16 +27,12 @@ const checkAfkHandler = async (messageObj) => {
        if (messageObj?.reply_to_message?.from?.id) {            
            let checkMember =  data[messageObj?.reply_to_message?.from?.id];
             if (checkMember && checkMember?.isAfk){
-                let timeFrom = Math.floor(((Date.now() - checkMember.startDate) / (1000 * 60)) % 60);
-                if (timeFrom < 2) timeFrom = 'some minutes ago. yes some'
-                await sendMsg(messageObj, toUnicodeBold(`${messageObj?.reply_to_message?.from?.first_name} is Away!\n reasion : ${checkMember.resion}\n away from : ${timeFrom} min 💜`), true);
+                await sendMsg(messageObj, toUnicodeBold(`${messageObj?.reply_to_message?.from?.first_name} is Away!\n reasion : ${checkMember.resion}\n away from : ${timeAway(data[checkMember.startDate]) } 💜`), true);
             }
         }
 
         if (data[messageObj?.from?.id]?.isAfk){
-            let timeFrom = Math.floor(((Date.now() - data[messageObj?.from?.id]?.startDate) / (1000 * 60)) % 60);
-            if (timeFrom < 2) timeFrom = 'some minutes ago. yes some'
-            await sendMsg(messageObj, toUnicodeBold(`${messageObj?.from?.first_name} is Now Available !\n Away reasion : ${data[messageObj?.from?.id]?.resion}\n Away time : ${timeFrom} min 💜`), true);
+            await sendMsg(messageObj, toUnicodeBold(`${messageObj?.from?.first_name} is Now Available !\n Away reasion : ${data[messageObj?.from?.id]?.resion}\n Away time : ${timeAway(data[messageObj?.from?.id]?.startDate) } 💜`), true);
             let newData = {
                 [messageObj?.from?.id]: {
                     startDate: Date.now(),
@@ -52,7 +48,28 @@ const checkAfkHandler = async (messageObj) => {
     }
 }
 
+function timeAway(startDate) {
+    const now = new Date();
+    const start = new Date(startDate);
 
+    const diffInSeconds = Math.floor((now - start) / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+    const diffInMonths = Math.floor(diffInDays / 30);
+
+    if (diffInMonths > 0) {
+        return `${diffInMonths} month${diffInMonths > 1 ? 's' : ''}`;
+    } else if (diffInDays > 0) {
+        return `${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+    } else if (diffInHours > 0) {
+        return `${diffInHours} hour${diffInHours > 1 ? 's' : ''}`;
+    } else if (diffInMinutes>0){
+        return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''}`;
+    } else {
+        return `${diffInSeconds} second${diffInSeconds > 1 ? 's' : ''}`;
+    }
+}
 
 
 module.exports = { createAfkHandler, checkAfkHandler }
