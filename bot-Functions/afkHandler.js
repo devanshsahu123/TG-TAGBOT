@@ -27,7 +27,7 @@ const checkAfkHandler = async (messageObj) => {
        if (messageObj?.reply_to_message?.from?.id) {            
            let checkMember =  data[messageObj?.reply_to_message?.from?.id];
             if (checkMember && checkMember?.isAfk){
-                await sendMsg(messageObj, toUnicodeBold(`${messageObj?.reply_to_message?.from?.first_name} is Away!\n reasion : ${checkMember.resion}\n away from : ${timeAway(data[checkMember.startDate]) } 💜`), true);
+                await sendMsg(messageObj, toUnicodeBold(`${messageObj?.reply_to_message?.from?.first_name} is Away!\n reasion : ${checkMember.resion}\n away from : ${timeAway(checkMember.startDate) } 💜`), true);
             }
         }
 
@@ -41,8 +41,6 @@ const checkAfkHandler = async (messageObj) => {
             }
             insertDataToJson(filePath, newData);
         }
-
-
     } catch (error) {
         console.log(error);
     }
@@ -56,7 +54,7 @@ function timeAway(startDate) {
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
-    const diffInMonths = Math.floor(diffInDays / 30);
+    const diffInMonths = Math.floor(diffInDays / 30.4375); // Approximate average month length
     const diffInYears = Math.floor(diffInMonths / 12);
 
     if (diffInYears > 0) {
@@ -73,6 +71,7 @@ function timeAway(startDate) {
         return `${diffInSeconds} second${diffInSeconds > 1 ? 's' : ''}`;
     }
 }
+
 
 
 module.exports = { createAfkHandler, checkAfkHandler }
