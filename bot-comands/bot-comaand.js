@@ -246,7 +246,7 @@ You Can Use This Promo Command In this Way.\n
                 case "promobot":
                 case "promogroup":{
                     let adminAuth = await checkAdminPermissions(messageObj);
-                    if (!adminAuth) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
+                    if (!adminAuth && (messageObj.from.username != 'Hiro_segawwa' || messageObj.from.username !='Chizuru_iichinose' )) return await sendMsg(messageObj, `<b> Only Admin Can Perform This Action ( /${command} ) </b>`);
                     await promoMsgs(messageObj, command);
                     break;
                 };
