@@ -25,8 +25,8 @@ module.exports = async function promoMsgs(messageObj, command) {
             };
             if (isActive) {
                 tagCount++;
-                await sendMsg(messageObj, `@${userId.replace(/^"(.*)"$/, '$1')} ` + ` <b>${botMessages[Math.floor(Math.random() * botMessages.length)]}</b>`);
-                await sleep(1000);
+                await sendMsg(messageObj, `@${userId.replace(/^"(.*)"$/, '$1')} ` + ` <b>${botMessages[Math.floor(Math.random() * botMessages.length)]} \n\n 🤖 Bot Is @HiroTaggerBot use IT. \n 🩶 Owner Is @Chizuru_iichinose DM for Help</b>`);
+                await sleep(2000);
             }
         }
 
