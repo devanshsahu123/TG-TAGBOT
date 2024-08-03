@@ -15,7 +15,7 @@ app.use(express.json());
 app.post('*', (req, res) => {
     console.log("request...");
     handler(req.body)
-    return res.send("hellow post ");
+    return res.send("hellow post");
 })
 
 app.get('*', (req, res) => {
