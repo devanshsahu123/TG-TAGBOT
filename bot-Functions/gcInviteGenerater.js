@@ -6,11 +6,8 @@ const botUrl = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
 const gcInviteGenerater = async(messageObj)=>{
 try {
     const getGroupIds = await Group.find({}).select(['groupId','-_id']);
-    console.log(getGroupIds);
     getGroupIds.forEach(async(data)=>{
         try {
-            console.log(data.groupId);
-            
         const checkGroup = await axios.get(`${botUrl}/exportChatInviteLink`, {
             params: {
                 chat_id: data.groupId,
