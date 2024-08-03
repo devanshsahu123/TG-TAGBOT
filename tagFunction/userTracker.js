@@ -47,8 +47,9 @@ if(!chat){
     return 
 }
         if (group) {
+            if (!group.members ) return 0;
             // Update existing group
-            group.members.set(username, isActive);
+            group.members.set(username , isActive);
             groupJob.activeAt = new Date();
             console.log('Group and GroupJob updated successfully...');
         } else {
@@ -56,12 +57,12 @@ if(!chat){
             group = new Group({
                 groupId,
                 members: memberData,
-                groupName: chat.username
+                groupName: chat.username || null
             });
 
             groupJob = new GroupJob({
                 groupId,
-                groupName: chat?.username || null,
+                groupName: chat.username || null,
             });
             console.log({ groupJob, chatUserName: chat.username });
             console.log('Group and GroupJob created successfully...');

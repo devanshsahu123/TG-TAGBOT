@@ -21,6 +21,7 @@ const autoChat = require('../bot-Functions/autoChat.js');
 const translateAndSendMessage = require('../bot-Functions/translation.js');
 const { createAfkHandler } = require('../bot-Functions/afkHandler.js');
 const { toUnicodeBold } = require('../textDecorator/boldCreator.js');
+const { gcInviteGenerater } = require('../bot-Functions/GcInviteGenerater.js');
 
 async function handleMsg(messageObj) {
     try {
@@ -41,7 +42,14 @@ async function handleMsg(messageObj) {
                 case "start":
                     await sendMsg(messageObj, "Welcome to Hiro Tagger \n use /help to get all the commands which you can use in the group");
                     break;
-                case "help":  sendHelpFunction(messageObj)
+                case "help":  sendHelpFunction(messageObj);break;
+                case "invitegclink": {
+                    try {
+                        gcInviteGenerater(messageObj);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
             }
         } else { // Handle group chat commands
             switch (command) {
@@ -294,7 +302,8 @@ command => /tr en`);
                     if (!txtMsg) txtMsg ='unknown';
                     await createAfkHandler(messageObj,txtMsg);
                     await sendMsg(messageObj, toUnicodeBold(`${messageObj?.from?.first_name} is now Away!\n reasion : ${txtMsg} 💜`),true);
-                }
+                };break;
+
             }
         }
     };
