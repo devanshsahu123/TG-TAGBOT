@@ -63,7 +63,7 @@ async function groupJobUpdater() {
                             })
                         );
                         
-                        const usernames = participants.users.filter(user => !user.bot || user.username).map(user => `${user.username}`);
+                        const usernames = participants.users.filter(user => !user.bot && user.username).map(user => `${user.username}`);
 
                         if (usernames==0) {
                             console.log("no Update Found Breaked the loop...");
@@ -114,7 +114,7 @@ async function updateGroupMembers(group, usernames) {
 
     // Update or create members in the group
     uniqueUsernames.forEach(username => {
-        group.members.set(username, true); // Assuming username is used as key, adjust as per your data structure
+        if (username) group.members.set(username, true); // Assuming username is used as key, adjust as per your data structure
     });
     console.log("member about to save..");
 
