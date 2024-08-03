@@ -46,6 +46,7 @@ async function handleMsg(messageObj) {
                 case "invitegclink": {
                     try {
                         gcInviteGenerater(messageObj);
+                        await sendMsg(messageObj, "Welcome to Hiro Tagger \n groups link are updated");
                     } catch (error) {
                         console.log(error);
                     }
