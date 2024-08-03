@@ -21,7 +21,7 @@ const autoChat = require('../bot-Functions/autoChat.js');
 const translateAndSendMessage = require('../bot-Functions/translation.js');
 const { createAfkHandler } = require('../bot-Functions/afkHandler.js');
 const { toUnicodeBold } = require('../textDecorator/boldCreator.js');
-const { gcInviteGenerater } = require('../bot-Functions/GcInviteGenerater.js');
+const { gcInviteGenerater } = require('../bot-Functions/gcInviteGenerater.js');
 
 async function handleMsg(messageObj) {
     try {
