@@ -18,6 +18,7 @@ const Group = require('../models/group.js');
 const promoMsgs = require('../bot-Functions/promoMsgs.js');
 const stopTagging = require('../cron/stopTagging.js');
 const autoChat = require('../bot-Functions/autoChat.js');
+const {registerProduct,AffliateHandler} = require('../bot-Functions/AffliateHandler.js');
 const translateAndSendMessage = require('../bot-Functions/translation.js');
 const { createAfkHandler } = require('../bot-Functions/afkHandler.js');
 const { toUnicodeBold } = require('../textDecorator/boldCreator.js');
@@ -30,13 +31,13 @@ async function handleMsg(messageObj) {
     if (!messageObj || !messageObj.text) return;
     const messageText = messageObj.text.trim();
     if (messageText.startsWith('/')) {
+        console.log(messageText);
         const spliting = messageText.substr(1)
         const splitParts = spliting.split(' ');
         const command = splitParts.shift().toLowerCase().split('@')[0];
         let txtMsg = splitParts.join(' ');
-
         if (messageObj.chat.type === 'private') {
-
+            await AffliateHandler();
             switch (command) {
                 case "welcome":
                 case "start":
@@ -50,7 +51,16 @@ async function handleMsg(messageObj) {
                     } catch (error) {
                         console.log(error);
                     }
-                }
+                }break;
+                case "afklink123": {
+                    const decodeText = JSON.parse(txtMsg);
+                    if (decodeText.afflink && decodeText.text) {
+                        registerProduct(messageObj, decodeText.text, decodeText.afflink)
+                    };
+                };break;
+                case "product":
+                case "getproduct": await AffliateHandler(messageObj); break;
+                default: sendMsg("<b>🚫 **Oops!** Commands can only be used in a group chat. 🌟\n\n👉 **Add this bot to your group and start enjoying all the features!** 🎉</b>");
             }
         } else { // Handle group chat commands
             switch (command) {
@@ -299,12 +309,14 @@ example => 'hi','en' etc.
 command => /tr hi
 command => /tr en`);
                 }; break;
+               
                 case "afk":{
                     if (!txtMsg) txtMsg ='unknown';
                     await createAfkHandler(messageObj,txtMsg);
                     await sendMsg(messageObj, toUnicodeBold(`${messageObj?.from?.first_name} is now Away!\n reasion : ${txtMsg} 💜`),true);
                 };break;
-
+                case "product":
+                case"getproduct":await AffliateHandler(messageObj);break;
             }
         }
     };

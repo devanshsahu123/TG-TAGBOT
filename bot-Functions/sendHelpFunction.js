@@ -33,6 +33,8 @@ module.exports = async function sendHelpFunction(messageObj){
 
 - /tr languageCode - translate any msg on your language
 - /afk AwayReasion - Away From Keyword.give resion and away time to others.
+
+- /product - get Awsome product suggestion.
 `
     await sendMsg(messageObj, helpCommands)
 }
