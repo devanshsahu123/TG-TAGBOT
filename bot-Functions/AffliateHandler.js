@@ -10,11 +10,11 @@ async function AffliateHandler(messageObj) {
         }
 
         const randomIndex = Math.floor(Math.random() * count);
-        const randomProduct = await ProductAffiliate.findOne().skip(randomIndex).exec();
+        const randomProduct = await ProductAffiliate.findOne({type:"yt"}).skip(randomIndex).exec();
 
         const { text, affiliateLink } = randomProduct;
 
-        sendMsg(messageObj, `<b>✨ Check out this awesome product on Amazon:\n\n🎉 ${text}! 🎉\n\n🛒 Grab yours now using this link: ${affiliateLink} 🚀\n\n🌐 Site: Amazon</b>`);
+        sendMsg(messageObj, `<b>✨ Taking care of our health is so important! 🌟\n\n🎉 ${text}! 🎉\n\n🛒 Check out this video:\n ${affiliateLink} 🚀\n\n</b>`);
     } catch (error) {
         console.log(error);
     }
@@ -24,14 +24,14 @@ async function AffliateHandler(messageObj) {
 async function registerProduct(messageObj,text, affiliateLink, imageLink){
     try {
         await ProductAffiliate.create({
-            text, affiliateLink, imageLink
+            text, affiliateLink, imageLink,type:'yt'
         });
-        sendMsg(messageObj,"product Updated Successfully")
+        sendMsg(messageObj,"video Updated Successfully")
 
         // sendMsg(messageObj, `<b>✨ Check out this awesome product on Amazon:\n\n🎉 ${text}! 🎉\n\n🛒 Grab yours now using this link: ${affiliateLink} 🚀\n\n🌐 Site: Amazon</b>`);
 
     } catch (error) {
-        sendMsg(messageObj, "product Updating Issue:"+error.message)
+        sendMsg(messageObj, "video Updating Issue:"+error.message)
         console.log(error);
     }
 }
